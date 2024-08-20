@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="https://unpkg.com/js-year-calendar@2.0.0/dist/js-year-calendar.min.js"></script>
+		<script src="https://unpkg.com/js-year-calendar@2.0.0/locales/js-year-calendar.ru.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://unpkg.com/js-year-calendar@2.0.0/dist/js-year-calendar.min.css"/>
+		<style>
+            .day a {
+                color: inherit;
+                text-decoration: inherit;
+            }
+            .months-container {
+                row-gap: 1rem;
+            }
+		</style>
+	</head>
+	<body>
+		<div id="calendar"></div>
+		<script>
+          const logFiles = JSON.parse('#DATA#')
+          const dates = logFiles.map(d => new Date(`${d}T00:00`))
+          const getDateStr = d => d.toISOString().slice(0, 10)
+
+          if (dates.length) {
+            const disabledDates = []
+
+            const minDate = dates[0]
+            const maxDate = dates.at(-1)
+
+            const dayDate = new Date(minDate)
+            while (dayDate <= maxDate) {
+              if (!logFiles.includes(getDateStr(dayDate)))
+                disabledDates.push(new Date(`${getDateStr(dayDate)}T00:00`))
+
+              dayDate.setDate(dayDate.getDate() + 1)
+            }
+
+            new Calendar('#calendar', {
+              language: 'ru',
+              minDate,
+              maxDate,
+              disabledDays: disabledDates,
+              customDayRenderer: (el, date) => {
+                const fixedTimezoneDate = new Date(date)
+                fixedTimezoneDate.setHours(0 - date.getTimezoneOffset() / 60)
+
+                if (!logFiles.includes(getDateStr(fixedTimezoneDate)))
+                  return
+
+                setTimeout(() => {
+                  const a = document.createElement('a')
+                  a.target = '_blank'
+                  a.href = `#LOGS_EXTERNAL_PATH#/${getDateStr(fixedTimezoneDate)}.log`
+                  el.parentNode.replaceChild(a, el)
+                  a.appendChild(el)
+                })
+              },
+            })
+          }
+		</script>
+	</body>
+</html>
