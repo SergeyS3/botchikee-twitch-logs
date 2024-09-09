@@ -10,9 +10,6 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "glob": "^11.0.0"
-  },
   "engines": {
     "node": ">=20.6.1"
   }
