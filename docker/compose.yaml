@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  logs:
+    build: .
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/usr/src/app
+      - ${LOGS_LOCAL_PATH}:/usr/src/logs
+    environment:
+      LOGS_LOCAL_PATH: /usr/src/logs
+    ports:
+      - ${PORT}:${PORT}
