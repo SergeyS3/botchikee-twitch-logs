@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  logs:
+    build: .
+    volumes:
+      - ..:/var/www/app
+      - ${LOGS_LOCAL_PATH}:/var/www/logs
+    environment:
+      PORT: ${PORT}
+      LOGS_LOCAL_PATH: /var/www/logs
+      LOGS_EXTERNAL_PATH: ${LOGS_EXTERNAL_PATH}
+    ports:
+      - ${PORT}:${PORT}
